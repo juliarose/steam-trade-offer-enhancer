@@ -1,4 +1,4 @@
-// @include /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/.*\/inventory(\/$|\?|$)/
+// @include /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/[^\/]+\/inventory(?:#.*)?$/
 function main({ WINDOW, shared }) {
     const dom = {
         inventory: document.getElementById('inventories'),
