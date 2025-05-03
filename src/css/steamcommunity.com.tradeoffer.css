@@ -100,6 +100,16 @@
     height: 20px;
 }
 
+.icons img.parts {
+    width: 14px;
+    height: 20px;
+}
+            
+.icons img.ks {
+    width: 14px;
+    height: 15px;
+}
+
 .lowcraft {
     user-select: none;
     right: 4%;
