@@ -1,6 +1,6 @@
 {
   "name": "steam-trade-offer-enhancer",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "Fork of [Steam Trade Offer Enhancer by scholtzm](https://github.com/scholtzm/steam-trade-offer-enhancer) with extra features and performance enhancements. This userscript has many features useful for Team Fortress 2 trading.",
   "main": "steam.trade.offer.enhancer.user.js",
   "dependencies": {
