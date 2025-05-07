@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Steam Trade Offer Enhancer
 // @description Browser script to enhance Steam trade offers.
-// @version     2.2.3
+// @version     2.2.4
 // @author      Julia
 // @namespace   http://steamcommunity.com/profiles/76561198080179568/
 // @updateURL   https://github.com/juliarose/steam-trade-offer-enhancer/raw/master/steam.trade.offer.enhancer.meta.js
@@ -502,7 +502,7 @@ const scripts = [
                 width: 14px;
                 height: 20px;
             }
-
+                        
             .icons img.ks {
                 width: 14px;
                 height: 15px;
@@ -670,7 +670,7 @@ const scripts = [
                 width: 14px;
                 height: 20px;
             }
-
+                        
             .icons img.ks {
                 width: 14px;
                 height: 15px;
@@ -836,7 +836,7 @@ const scripts = [
                 width: 14px;
                 height: 20px;
             }
-
+                        
             .icons img.ks {
                 width: 14px;
                 height: 15px;
@@ -991,7 +991,7 @@ const scripts = [
                 width: 14px;
                 height: 20px;
             }
-
+                        
             .icons img.ks {
                 width: 14px;
                 height: 15px;
@@ -1453,7 +1453,7 @@ const scripts = [
                 width: 14px;
                 height: 20px;
             }
-            
+                        
             .icons img.ks {
                 width: 14px;
                 height: 15px;
@@ -3590,7 +3590,7 @@ const scripts = [
 // These are shared between page scripts.
 const DEPS = (function() {
     // current version number of script
-    const VERSION = '2.2.3';
+    const VERSION = '2.2.4';
     // our window object for accessing globals
     const WINDOW = unsafeWindow;
     // dependencies to provide to each page script
@@ -3890,11 +3890,11 @@ const DEPS = (function() {
                         if (isSpelled) {
                             attributes.spelled = true;
                         }
-                        
+                            
                         if (isStrangePartAttached) {
                             attributes.parts = true;
                         }
-                        
+                            
                         if (isKillstreakAttached) {
                             attributes.killstreak = true;
                         }
@@ -3975,7 +3975,7 @@ const DEPS = (function() {
                         // add it to the icons element
                         iconsEl.appendChild(spellEl);
                     }
-
+    
                     if (attributes.parts) {
                         // construct icon for strange parts
                         const partsEl = document.createElement('img');
@@ -3986,7 +3986,7 @@ const DEPS = (function() {
                         // add it to the icons element
                         iconsEl.appendChild(partsEl);
                     }
-
+    
                     if (attributes.killstreak) {
                         // construct icon for killstreak
                         const ksEl = document.createElement('img');

@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.2.4] - 2025-05-07
+### Added
+- Strange part and killstreak icons.
+- Halloween 2024 effects.
+- Smissmas 2024 effects.
+
+### Fixed
+- Steam inventory path.
+- Effect images not loading.
+
 ## [2.2.3] - 2024-07-23
 ### Fixed
 - A bug where the items did not summarize for sent trade offers.
