@@ -518,6 +518,7 @@ const scripts = [
                 z-index: 1;
                 line-height: 1;
                 position: absolute;
+                pointer-events: none;
             }
             
             .icons > * {
@@ -526,6 +527,7 @@ const scripts = [
             
             .icons {
                 position: absolute;
+                pointer-events: none;
                 bottom: 4%;
                 left: 4%;
                 width: 92%;
@@ -686,6 +688,7 @@ const scripts = [
                 z-index: 1;
                 line-height: 1;
                 position: absolute;
+                pointer-events: none;
             }
             
             .icons > * {
@@ -694,6 +697,7 @@ const scripts = [
             
             .icons {
                 position: absolute;
+                pointer-events: none;
                 bottom: 4%;
                 left: 4%;
                 width: 92%;
@@ -852,6 +856,7 @@ const scripts = [
                 z-index: 1;
                 line-height: 1;
                 position: absolute;
+                pointer-events: none;
             }
             
             .icons > * {
@@ -860,6 +865,7 @@ const scripts = [
             
             .icons {
                 position: absolute;
+                pointer-events: none;
                 bottom: 4%;
                 left: 4%;
                 width: 92%;
@@ -1007,6 +1013,7 @@ const scripts = [
                 z-index: 1;
                 line-height: 1;
                 position: absolute;
+                pointer-events: none;
             }
             
             .icons > * {
@@ -1015,6 +1022,7 @@ const scripts = [
             
             .icons {
                 position: absolute;
+                pointer-events: none;
                 bottom: 4%;
                 left: 4%;
                 width: 92%;
@@ -1469,6 +1477,7 @@ const scripts = [
                 z-index: 1;
                 line-height: 1;
                 position: absolute;
+                pointer-events: none;
             }
             
             .icons > * {
@@ -1477,6 +1486,7 @@ const scripts = [
             
             .icons {
                 position: absolute;
+                pointer-events: none;
                 bottom: 4%;
                 left: 4%;
                 width: 92%;
