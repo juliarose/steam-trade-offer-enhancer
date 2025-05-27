@@ -120,6 +120,7 @@
     z-index: 1;
     line-height: 1;
     position: absolute;
+    pointer-events: none;
 }
 
 .icons > * {
@@ -128,6 +129,7 @@
 
 .icons {
     position: absolute;
+    pointer-events: none;
     bottom: 4%;
     left: 4%;
     width: 92%;
