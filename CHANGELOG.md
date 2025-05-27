@@ -1,8 +1,12 @@
 # Changelog
 
+## [2.2.5] - 2025-05-27
+### Fixed
+- Adds pointer-events: none; to the divs containing the low craft number and the strange part/killstreak icons. <https://github.com/juliarose/steam-trade-offer-enhancer/pull/12>
+
 ## [2.2.4] - 2025-05-07
 ### Added
-- Strange part and killstreak icons.
+- Strange part and killstreak icons. <https://github.com/juliarose/steam-trade-offer-enhancer/pull/10>
 - Halloween 2024 effects.
 - Smissmas 2024 effects.
 

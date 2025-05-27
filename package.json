@@ -8,7 +8,7 @@
     "eslint": "^6.3.0"
   },
   "devDependencies": {
-    "packus": "git+https://github.com/juliarose/packus.git#v1.0.4"
+    "packus": "git+https://github.com/juliarose/packus.git#v1.0.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

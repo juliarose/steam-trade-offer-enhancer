@@ -14,7 +14,7 @@
 // @include     /^https?:\/\/(.*\.)?backpack\.tf(:\\d+)?\/(stats|classifieds).*/
 // @include     /^https?:\/\/(.*\.)?backpack\.tf(:\d+)?\/(?:id|profiles)\/.*/
 // @include     /^https?:\/\/steamcommunity\.com\/market\/listings\/440\/.*/
-// @include     /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/[^\/]+\/inventory(?:#.*)?$/
+// @include     /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/[^\/]+\/inventory(?:[/#].*|$)/
 // @include     /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/[^\/]+(\/$|\?|$)/
 // @include     /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/.*\/tradeoffers/
 // @include     /^https?:\/\/steamcommunity\.com\/tradeoffer.*/
@@ -638,7 +638,7 @@ const scripts = [
     },
     {
         includes: [
-            /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/[^\/]+\/inventory(?:#.*)?$/
+            /^https?:\/\/steamcommunity\.com\/(?:id|profiles)\/[^\/]+\/inventory(?:[/#].*|$)/
         ],
         styles: `
             .unusual {
