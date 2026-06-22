@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Steam Trade Offer Enhancer
 // @description Browser script to enhance Steam trade offers.
-// @version     2.2.7
+// @version     2.2.8
 // @author      Julia
 // @namespace   http://steamcommunity.com/profiles/76561198080179568/
 // @updateURL   https://github.com/juliarose/steam-trade-offer-enhancer/raw/master/steam.trade.offer.enhancer.meta.js
@@ -3033,7 +3033,7 @@ const scripts = [
             
             // configure state
             {
-                tradeOfferWindow.userChanged(page.get.$activeInventoryTab());
+                tradeOfferWindow.updateDisplay(true, 440); // this works
                 
                 if (getStored(stored.id_visible) == 1) {
                     page.fields.$ids.show();
