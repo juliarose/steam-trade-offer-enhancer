@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.8] - 2026-08-07
+- Smissmas 2025 effects.
+- Summer 2026 effects.
+
 ## [2.2.7] - 2025-11-20
 
 ### Fixed
