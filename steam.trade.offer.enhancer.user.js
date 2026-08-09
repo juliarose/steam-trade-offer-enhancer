@@ -3033,7 +3033,7 @@ const scripts = [
             
             // configure state
             {
-                tradeOfferWindow.userChanged(page.get.$activeInventoryTab());
+                tradeOfferWindow.updateDisplay(true, 440); // this works
                 
                 if (getStored(stored.id_visible) == 1) {
                     page.fields.$ids.show();
