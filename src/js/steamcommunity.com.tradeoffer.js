@@ -23,7 +23,7 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
         $appSelectOption: $('.appselect_options .option'),
         // get jquery elements which are constantly changing based on page state
         get: {
-            $inventory: () => $('.inventory_ctn:visible'),
+            $inventory: () => $('.inventory_ctn:visible').not('#trade_inventory_unavailable'),
             $activeInventoryTab: () => $('.inventory_user_tab.active'),
             $modifyTradeOffer: () => $('div.modify_trade_offer:visible'),
             $appSelectImg: () => $('#appselect_activeapp img'),
@@ -268,7 +268,7 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
             const items = $addedItems.find('div.item').get();
             
             // remove all at once
-            WINDOW.GTradeStateManager.RemoveItemsFromTrade(items.reverse());
+            RemoveItemsFromTrade(items.reverse());
         }
         
         /**
@@ -375,14 +375,6 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
          * @param {(string|number)} appid - App ID of inventory selected.
          */
         function updateDisplay(isYou, appid) {
-            // update the state of the button
-            const updateState = ($btn, show) => {
-                if (show) {
-                    $btn.show();
-                } else {
-                    $btn.hide();
-                }
-            };
             const isTF2 = appid == 440;
             const isCSGO = appid == 730;
             const listingIntent = urlParams.listing_intent;
@@ -408,10 +400,10 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
                 )
             );
             
-            updateState(page.btns.$items, true); 
-            updateState(page.btns.$keys, showKeys);
-            updateState(page.btns.$metal, showMetal);
-            updateState(page.btns.$listing, showListingButton);
+            updateVisibility(page.btns.$items, true); 
+            updateVisibility(page.btns.$keys, showKeys);
+            updateVisibility(page.btns.$metal, showMetal);
+            updateVisibility(page.btns.$listing, showListingButton);
         }
         
         /**
@@ -990,6 +982,112 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
     }());
     
     /**
+     * Remove items from trade offer.
+     * @param {HTMLElement[]} items - Items to remove.
+     */
+    function RemoveItemsFromTrade(items) {
+        function checkItems(items, isYou) {
+            if (items.length === 0) {
+                return false;
+            }
+            
+            function getGroups(rgItems) {
+                const groupBy = Utils.groupBy;
+                const grouped = groupBy(rgItems, 'appid');
+                
+                for (let appid in grouped) {
+                    grouped[appid] = groupBy(grouped[appid], 'contextid');
+                    
+                    for (let contextid in grouped[appid]) {
+                        grouped[appid][contextid] = groupBy(grouped[appid][contextid], 'id');
+                    }
+                }
+                
+                return grouped;
+            }
+            
+            // iterate over dom elements and collect rgItems from items
+            function iterItems(items) {
+                let rgItems = [];
+                const revertItem = WINDOW.RevertItem;
+                const isInTradeSlot = WINDOW.BIsInTradeSlot;
+                const cleanSlot = WINDOW.CleanupSlot;
+                const setStackItemInTrade = WINDOW.SetStackableItemInTrade;
+                
+                // this is done in reverse
+                for (let i = items.length - 1; i >= 0; i--) {
+                    const elItem = items[i];
+                    const item = elItem.rgItem;
+                    
+                    if (isInTradeSlot(elItem)) {
+                        cleanSlot(elItem.parentNode.parentNode);
+                    }
+                    
+                    if (item.is_stackable) {
+                        // stackable items are fully removed by this call
+                        setStackItemInTrade(item, 0);
+                        continue;
+                    }
+                    
+                    revertItem(item);
+                    item.homeElement.down('.slot_actionmenu_button').show();
+                    rgItems.push(item);
+                }
+                
+                return rgItems;
+            }
+            
+            // iterate assets in slots
+            function iterAssets(rgItems) {
+                if (rgItems.length === 0) {
+                    return false;
+                }
+                
+                const getItem = ({ appid, contextid, assetid }) => {
+                    return (
+                        groups[appid] &&
+                        groups[appid][contextid] &&
+                        groups[appid][contextid][assetid]
+                    );
+                };
+                const slots = isYou ? TRADE_STATUS.me : TRADE_STATUS.them;
+                const groups = getGroups(rgItems);
+                let assets = slots.assets;
+                let bChanged;
+                
+                for (let i = assets.length - 1; i >= 0; i--) {
+                    const asset = assets[i];
+                    const item = getItem(asset);
+                    
+                    if (item) {
+                        bChanged = true;
+                        assets.splice(i, 1);
+                    }
+                }
+                
+                return bChanged;
+            }
+            
+            // return true if any assets were removed from trade
+            return iterAssets(iterItems(items));
+        }
+        
+        const manager = WINDOW.GTradeStateManager;
+        const [yours, theirs] = Utils.partition(items, (elItem) => {
+            return !elItem.rgItem.is_their_item;
+        });
+        const hasChanged = [
+            checkItems(yours, true),
+            checkItems(theirs, false)
+        ].some(Boolean);
+        
+        if (hasChanged) {
+            manager.m_bChangesMade = true;
+            manager.UpdateTradeStatus();
+        }
+    }
+    
+    /**
      * Gets the inventory for selected app and context of user.
      * @param {string} appid - AppID of inventory.
      * @param {string} contextid - ContextID of inventory.
@@ -1026,6 +1124,36 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
             appid,
             contextid
         };
+    }
+    
+    /**
+     * Update visibility of an element.
+     * @param {Object} $el - JQuery element to update.
+     * @param {boolean} show - Show or hide the element.
+     */
+    function updateVisibility($el, show) {
+        if (show) {
+            $el.show();
+        } else {
+            $el.hide();
+        }
+    }
+    
+    /**
+     * Configures the state of the trade offer window based on the current page and url parameters.
+     */
+    function configureState() {
+        tradeOfferWindow.userChanged(page.get.$activeInventoryTab());
+        
+        if (getStored(stored.id_visible) == 1) {
+            page.fields.$ids.show();
+        }
+        
+        if (urlParams.listing_intent !== undefined) {
+            const isSelling = urlParams.listing_intent == 0;
+            
+            page.btns.$listing.addClass(isSelling ? 'selling' : 'buying');
+        }
     }
     
     /**
@@ -1520,6 +1648,7 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
                 const split = inventory.id.replace('inventory_', '').split('_');
                 const [steamid, appid, contextid] = split;
                 
+                configureState();
                 inventoryManager.call(steamid, appid, contextid);
             });
             
@@ -1533,17 +1662,10 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
     
     // configure state
     {
-        tradeOfferWindow.userChanged(page.get.$activeInventoryTab());
-        
-        if (getStored(stored.id_visible) == 1) {
-            page.fields.$ids.show();
-        }
-        
-        if (urlParams.listing_intent !== undefined) {
-            const isSelling = urlParams.listing_intent == 0;
-            
-            page.btns.$listing.addClass(isSelling ? 'selling' : 'buying');
-        }
+        // just hide these until the inventory is properly loaded
+        updateVisibility(page.btns.$keys, false);
+        updateVisibility(page.btns.$metal, false);
+        updateVisibility(page.btns.$listing, false);
     }
     
     // override page functions
@@ -1992,110 +2114,6 @@ function main({ WINDOW, $, Utils, shared, getStored, setStored }) {
             
             if (bElementsChanged && rgElementsToRemove.length > 0) {
                 rgElementsToRemove.invoke('remove');
-            }
-        };
-        
-        // remove multiple items from a trade offer at once
-        // pretty much removes all items INSTANTLY
-        WINDOW.GTradeStateManager.RemoveItemsFromTrade = function(items) {
-            function checkItems(items, isYou) {
-                if (items.length === 0) {
-                    return false;
-                }
-                
-                function getGroups(rgItems) {
-                    const groupBy = Utils.groupBy;
-                    const grouped = groupBy(rgItems, 'appid');
-                    
-                    for (let appid in grouped) {
-                        grouped[appid] = groupBy(grouped[appid], 'contextid');
-                        
-                        for (let contextid in grouped[appid]) {
-                            grouped[appid][contextid] = groupBy(grouped[appid][contextid], 'id');
-                        }
-                    }
-                    
-                    return grouped;
-                }
-                
-                // iterate over dom elements and collect rgItems from items
-                function iterItems(items) {
-                    let rgItems = [];
-                    const revertItem = WINDOW.RevertItem;
-                    const isInTradeSlot = WINDOW.BIsInTradeSlot;
-                    const cleanSlot = WINDOW.CleanupSlot;
-                    const setStackItemInTrade = WINDOW.SetStackableItemInTrade;
-                    
-                    // this is done in reverse
-                    for (let i = items.length - 1; i >= 0; i--) {
-                        const elItem = items[i];
-                        const item = elItem.rgItem;
-                        
-                        if (isInTradeSlot(elItem)) {
-                            cleanSlot(elItem.parentNode.parentNode);
-                        }
-                        
-                        if (item.is_stackable) {
-                            // stackable items are fully removed by this call
-                            setStackItemInTrade(item, 0);
-                            continue;
-                        }
-                        
-                        revertItem(item);
-                        item.homeElement.down('.slot_actionmenu_button').show();
-                        rgItems.push(item);
-                    }
-                    
-                    return rgItems;
-                }
-                
-                // iterate assets in slots
-                function iterAssets(rgItems) {
-                    if (rgItems.length === 0) {
-                        return false;
-                    }
-                    
-                    const getItem = ({ appid, contextid, assetid }) => {
-                        return (
-                            groups[appid] &&
-                            groups[appid][contextid] &&
-                            groups[appid][contextid][assetid]
-                        );
-                    };
-                    const slots = isYou ? TRADE_STATUS.me : TRADE_STATUS.them;
-                    const groups = getGroups(rgItems);
-                    let assets = slots.assets;
-                    let bChanged;
-                    
-                    for (let i = assets.length - 1; i >= 0; i--) {
-                        const asset = assets[i];
-                        const item = getItem(asset);
-                        
-                        if (item) {
-                            bChanged = true;
-                            assets.splice(i, 1);
-                        }
-                    }
-                    
-                    return bChanged;
-                }
-                
-                // return true if any assets were removed from trade
-                return iterAssets(iterItems(items));
-            }
-            
-            const manager = WINDOW.GTradeStateManager;
-            const [yours, theirs] = Utils.partition(items, (elItem) => {
-                return !elItem.rgItem.is_their_item;
-            });
-            const hasChanged = [
-                checkItems(yours, true),
-                checkItems(theirs, false)
-            ].some(Boolean);
-            
-            if (hasChanged) {
-                manager.m_bChangesMade = true;
-                manager.UpdateTradeStatus();
             }
         };
     }

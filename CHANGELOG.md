@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.2.9] - 2026-10-98
+
+### Fixed
+- Buttons not displaying on initial page load. <https://github.com/juliarose/steam-trade-offer-enhancer/issues/23>
+
 ## [2.2.8] - 2026-08-07
 - Smissmas 2025 effects.
 - Summer 2026 effects.
