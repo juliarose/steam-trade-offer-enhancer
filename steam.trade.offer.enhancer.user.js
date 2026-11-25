@@ -4015,7 +4015,7 @@ const DEPS = (function() {
                         // construct icon for strange parts
                         const partsEl = document.createElement('img');
                         
-                        partsEl.setAttribute('src', 'https://itempedia.tf/assets/wrench.png');
+                        partsEl.setAttribute('src', 'https://itempedia.tf/assets/icons/icon-wrench.png');
                         partsEl.classList.add('parts');
                         
                         // add it to the icons element
@@ -4026,7 +4026,7 @@ const DEPS = (function() {
                         // construct icon for killstreak
                         const ksEl = document.createElement('img');
                         
-                        ksEl.setAttribute('src', 'https://itempedia.tf/assets/icon-ks.png');
+                        ksEl.setAttribute('src', 'https://itempedia.tf/assets/icons/icon-ks.png');
                         ksEl.classList.add('ks');
                         
                         // add it to the icons element
